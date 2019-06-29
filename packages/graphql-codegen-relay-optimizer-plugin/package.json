@@ -14,7 +14,7 @@
   },
   "description": "GraphQL Code Generator plugin for optimizing your GraphQL queries relay style.",
   "dependencies": {
-    "graphql": "14.3.1",
+    "graphql": "14.4.0",
     "relay-compiler": "5.0.0"
   },
   "devDependencies": {
