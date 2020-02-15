@@ -7,12 +7,10 @@
   ],
   "lint-staged": {
     "*.{js}": [
-      "eslint",
-      "git add -f"
+      "eslint"
     ],
     "*.{js,json,css,md,ts,tsx}": [
-      "prettier --write",
-      "git add -f"
+      "prettier --write"
     ]
   },
   "scripts": {
