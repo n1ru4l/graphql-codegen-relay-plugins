@@ -21,7 +21,7 @@
     "build": "yarn workspaces run build"
   },
   "devDependencies": {
-    "eslint": "5.16.0",
+    "eslint": "6.8.0",
     "eslint-config-prettier": "6.10.0",
     "eslint-plugin-jest": "22.21.0",
     "husky": "4.2.3",
