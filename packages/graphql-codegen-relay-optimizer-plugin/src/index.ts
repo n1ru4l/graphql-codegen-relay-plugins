@@ -26,7 +26,7 @@ export const plugin: PluginFunction<RelayOptimizerPluginConfig> = (
     /* GraphQL */ `
       directive @connection(key: String!, filter: [String!]) on FIELD
       directive @client on FIELD
-    `
+    `,
   ]);
 
   const documentAsts = documents.reduce((prev, v) => {
@@ -43,10 +43,10 @@ export const plugin: PluginFunction<RelayOptimizerPluginConfig> = (
     .applyTransforms([
       applyFragmentArgumentTransform,
       flattenTransformWithOptions({ flattenAbstractTypes: false }),
-      skipRedundantNodesTransform
+      skipRedundantNodesTransform,
     ])
     .documents()
-    .filter(doc => doc.kind === "Fragment");
+    .filter((doc) => doc.kind === "Fragment");
 
   const queryCompilerContext = new CompilerContext(adjustedSchema)
     .addAll(relayDocuments)
@@ -54,7 +54,7 @@ export const plugin: PluginFunction<RelayOptimizerPluginConfig> = (
       applyFragmentArgumentTransform,
       inlineFragmentsTransform,
       flattenTransformWithOptions({ flattenAbstractTypes: false }),
-      skipRedundantNodesTransform
+      skipRedundantNodesTransform,
     ]);
 
   const newQueryDocuments:Types.DocumentFile[]  = queryCompilerContext.documents().map(doc => ({
@@ -67,13 +67,15 @@ export const plugin: PluginFunction<RelayOptimizerPluginConfig> = (
       location: "optimized by relay",
       document: parse(relayPrint(adjustedSchema, doc))
     })),
-    ...newQueryDocuments
+    ...newQueryDocuments,
   ];
 
   documents.splice(0, documents.length);
-  documents.push(...newDocuments);
+  documents.push(
+    ...newDocuments
+  );
 
   return {
-    content: ""
+    content: "",
   };
 };
