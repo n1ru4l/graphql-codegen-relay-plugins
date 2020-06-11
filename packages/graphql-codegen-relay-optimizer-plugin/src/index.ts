@@ -30,7 +30,7 @@ export const plugin: PluginFunction<RelayOptimizerPluginConfig> = (
   ]);
 
   const documentAsts = documents.reduce((prev, v) => {
-    return [...prev, ...v.content.definitions];
+    return [...prev, ...v.document?.definitions ?? []];
   }, [] as DefinitionNode[]);
 
   const relayDocuments = RelayParser.transform(adjustedSchema, documentAsts);
@@ -57,15 +57,15 @@ export const plugin: PluginFunction<RelayOptimizerPluginConfig> = (
       skipRedundantNodesTransform
     ]);
 
-  const newQueryDocuments = queryCompilerContext.documents().map(doc => ({
-    filePath: "optimized by relay",
-    content: parse(relayPrint(adjustedSchema, doc))
+  const newQueryDocuments:Types.DocumentFile[]  = queryCompilerContext.documents().map(doc => ({
+    location: "optimized by relay",
+    document: parse(relayPrint(adjustedSchema, doc))
   }));
 
-  const newDocuments = [
+  const newDocuments: Types.DocumentFile[] = [
     ...fragmentDocuments.map(doc => ({
-      filePath: "optimized by relay",
-      content: parse(relayPrint(adjustedSchema, doc))
+      location: "optimized by relay",
+      document: parse(relayPrint(adjustedSchema, doc))
     })),
     ...newQueryDocuments
   ];

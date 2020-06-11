@@ -11,7 +11,7 @@ import { MutationUpdaterFn } from "apollo-client";
 
 type Todos = Exclude<TodoListFooter_UserFragment, null>["todos"];
 
-const createOptmisticResponse = (
+const createOptimisticResponse = (
   todos: Todos,
   user: TodoListFooter_UserFragment
 ): RemoveCompletedTodosMutationMutation => {
@@ -71,7 +71,7 @@ const update: MutationUpdaterFn<RemoveCompletedTodosMutationMutation> = (
   });
 };
 
-export const useRemoveComletedTodosMutation = () => {
+export const useRemoveCompletedTodosMutation = () => {
   const [mutate] = useRemoveCompletedTodosMutationMutation();
 
   return useCallback(
@@ -82,7 +82,7 @@ export const useRemoveComletedTodosMutation = () => {
 
       return mutate({
         variables: { input },
-        optimisticResponse: createOptmisticResponse(todos, user),
+        optimisticResponse: createOptimisticResponse(todos, user),
         update
       });
     },

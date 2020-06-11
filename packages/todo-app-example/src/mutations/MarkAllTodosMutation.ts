@@ -5,17 +5,18 @@ import {
   MarkAllTodosMutationMutation
 } from "../generated-types";
 import { useCallback } from "react";
+import { None, Some } from "../Option";
 
-type Todos = Exclude<TodoList_UserFragment["todos"], null>;
+type Todos = Exclude<TodoList_UserFragment["todos"], None>;
 type ChangedTodos = Exclude<
-  Exclude<MarkAllTodosMutationMutation["markAllTodos"], null>["changedTodos"],
-  null
+  Exclude<MarkAllTodosMutationMutation["markAllTodos"], None>["changedTodos"],
+  None
 >;
 type ChangedTodo = ChangedTodos[number];
 
 function emptyEdgeFilter<TValue>(
-  value: TValue | null | undefined
-): value is TValue {
+  value: TValue
+): value is Some<TValue> {
   return Boolean(value);
 }
 
