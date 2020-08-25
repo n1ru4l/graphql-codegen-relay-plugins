@@ -38,7 +38,7 @@
     "graphql": "14.6.0",
     "jest": "24.7.1",
     "ts-jest": "25.2.1",
-    "typescript": "3.8.3"
+    "typescript": "3.9.7"
   },
   "scripts": {
     "test": "jest",
