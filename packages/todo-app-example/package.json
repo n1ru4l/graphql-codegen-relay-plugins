@@ -56,7 +56,7 @@
     "@types/classnames": "2.2.10",
     "@types/jest": "24.9.1",
     "@types/node": "12.12.58",
-    "@types/react": "16.9.47",
+    "@types/react": "16.9.49",
     "@types/react-dom": "16.9.8",
     "graphql.macro": "1.4.2",
     "idx.macro": "4.0.0",
