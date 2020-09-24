@@ -25,7 +25,7 @@
     "relay"
   ],
   "peerDependencies": {
-    "graphql": "14.x.x"
+    "graphql": "14.x.x || 15.x.x"
   },
   "dependencies": {
     "@graphql-codegen/plugin-helpers": "1.17.8",
