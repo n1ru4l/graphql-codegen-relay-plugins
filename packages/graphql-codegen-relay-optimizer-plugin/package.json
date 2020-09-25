@@ -1,6 +1,6 @@
 {
   "name": "@n1ru4l/graphql-codegen-relay-optimizer-plugin",
-  "version": "4.0.0",
+  "version": "5.0.0-alpha.0",
   "description": "GraphQL Code Generator plugin for optimizing your GraphQL queries relay style.",
   "license": "MIT",
   "main": "dist/main/index.js",
@@ -25,14 +25,14 @@
     "relay"
   ],
   "peerDependencies": {
-    "graphql": "14.x.x"
+    "graphql": "14.x.x || 15.x.x"
   },
   "dependencies": {
-    "@graphql-codegen/plugin-helpers": "1.7.0",
+    "@graphql-codegen/plugin-helpers": "1.17.8",
     "relay-compiler": "10.0.1"
   },
   "devDependencies": {
-    "@graphql-codegen/testing": "1.7.0",
+    "@graphql-codegen/testing": "1.17.7",
     "@types/jest": "24.9.1",
     "@types/relay-compiler": "8.0.0",
     "graphql": "14.7.0",
