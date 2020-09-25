@@ -5,17 +5,11 @@ import {
   Todo_TodoFragment,
   RemoveTodoInput,
   TodoList_UserFragmentDoc,
-  TodoList_UserFragment
+  TodoList_UserFragment,
 } from "../generated-types";
+import * as Option from "../Option";
 import { useCallback } from "react";
 import { MutationUpdaterFn } from "apollo-client";
-import idx from "idx.macro";
-
-function emptyEdgeFilter<TValue>(
-  value: TValue | null | undefined
-): value is TValue {
-  return Boolean(value);
-}
 
 const createOptimisticResponse = (
   todo: Todo_TodoFragment,
@@ -29,36 +23,48 @@ const createOptimisticResponse = (
       __typename: "User",
       id: user.id,
       completedCount: user.completedCount - (todo.complete ? 1 : 0),
-      totalCount: user.totalCount - 1
-    }
-  }
+      totalCount: user.totalCount - 1,
+    },
+  },
 });
 
 const update: MutationUpdaterFn<RemoveTodoMutationMutation> = (
   dataProxy,
   result
 ) => {
-  const removedItemId = idx(result, _ => _.data.removeTodo.deletedTodoId);
-  const userId = idx(result, _ => _.data.removeTodo.user.id);
-  if (!removedItemId || !userId) {
+  const removedItemId = result?.data?.removeTodo?.deletedTodoId;
+  const userId = result?.data?.removeTodo?.user.id;
+  if (Option.isNone(removedItemId) || Option.isNone(userId)) {
     return;
   }
   const data = dataProxy.readFragment<TodoList_UserFragment>({
     fragment: TodoList_UserFragmentDoc,
     fragmentName: "TodoList_user",
-    id: `User:${userId}`
+    id: `User:${userId}`,
   });
-  if (!data || !data.todos || !data.todos.edges) {
+  if (
+    Option.isNone(data) ||
+    Option.isNone(data.todos) ||
+    Option.isNone(data.todos.edges)
+  ) {
     return;
   }
-  data.todos.edges = data.todos.edges
-    .filter(emptyEdgeFilter)
-    .filter(edge => (edge.node ? edge.node.id !== removedItemId : true));
+
+  const newData = {
+    ...data,
+    todos: {
+      ...data.todos,
+      edges: data.todos.edges
+        .filter(Option.isSome)
+        .filter((edge) => (edge.node ? edge.node.id !== removedItemId : true)),
+    },
+  };
+
   dataProxy.writeFragment<TodoList_UserFragment>({
     fragment: TodoList_UserFragmentDoc,
     fragmentName: "TodoList_user",
     id: `User:${userId}`,
-    data
+    data: newData,
   });
 };
 
@@ -69,13 +75,13 @@ export const useRemoveTodoMutation = () => {
     (todo: Todo_TodoFragment, user: Todo_UserFragment) => {
       const input: RemoveTodoInput = {
         id: todo.id,
-        userId: user.userId
+        userId: user.userId,
       };
 
       return mutate({
         variables: { input },
         optimisticResponse: createOptimisticResponse(todo, user),
-        update
+        update,
       });
     },
     [mutate]

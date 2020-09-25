@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from 'graphql.macro';
 import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;

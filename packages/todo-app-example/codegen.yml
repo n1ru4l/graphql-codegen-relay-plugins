@@ -9,6 +9,7 @@ generates:
       withComponent: false
       withHooks: true
       reactApolloVersion: 2
+      gqlImport: graphql.macro#gql
     plugins:
       - "@n1ru4l/graphql-codegen-relay-optimizer-plugin"
       - "typescript"

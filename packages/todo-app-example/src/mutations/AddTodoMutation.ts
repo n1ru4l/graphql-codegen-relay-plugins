@@ -4,10 +4,10 @@ import {
   TodoApp_UserFragment,
   AddTodoMutationMutation,
   TodoList_UserFragmentDoc,
-  TodoList_UserFragment
+  TodoList_UserFragment,
 } from "../generated-types";
+import * as Option from "../Option";
 import { FetchResult } from "apollo-link";
-import idx from "idx.macro";
 import { useCallback } from "react";
 import { MutationUpdaterFn } from "apollo-client";
 
@@ -28,34 +28,34 @@ const createOptimisticResponse = (
           __typename: "Todo",
           id: "client:newTodo:" + tempID++,
           text,
-          complete: false
-        }
+          complete: false,
+        },
       },
       user: {
         __typename: "User",
         id: user.id,
-        totalCount: user.totalCount
-      }
-    }
+        totalCount: user.totalCount,
+      },
+    },
   };
 };
 
 const update: MutationUpdaterFn<AddTodoMutationMutation> = (proxy, result) => {
-  const userId = idx(result, _ => _.data.addTodo.user.id);
-  if (!userId) {
+  const userId = result?.data?.addTodo?.user.id;
+  if (Option.isNone(userId)) {
     return;
   }
   const data = proxy.readFragment<TodoList_UserFragment>({
     fragment: TodoList_UserFragmentDoc,
     fragmentName: "TodoList_user",
-    id: `User:${userId}`
+    id: `User:${userId}`,
   });
-  if (!data) {
+  if (Option.isNone(data)) {
     return;
   }
-  const edges = idx(data, _ => _.todos.edges);
-  const addTodo = idx(result, _ => _.data.addTodo);
-  if (!edges || !addTodo) {
+  const edges = data.todos?.edges;
+  const addTodo = result?.data?.addTodo;
+  if (Option.isNone(edges) || Option.isNone(addTodo)) {
     return;
   }
   edges.push(addTodo.todoEdge);
@@ -63,7 +63,7 @@ const update: MutationUpdaterFn<AddTodoMutationMutation> = (proxy, result) => {
     fragment: TodoList_UserFragmentDoc,
     fragmentName: "TodoList_user",
     id: `User:${userId}`,
-    data
+    data,
   });
 };
 
@@ -81,13 +81,13 @@ export const useAddTodoMutation = () => {
       const input: AddTodoInput = {
         text,
         userId: user.userId,
-        clientMutationId: `${tempID++}`
+        clientMutationId: `${tempID++}`,
       };
 
       return mutate({
         variables: { input },
         optimisticResponse: createOptimisticResponse(text, user),
-        update
+        update,
       });
     },
     [mutate]
