@@ -6,13 +6,13 @@
 
 ### Current List of Features
 
-- [Optimize Queries](https://relay.dev/docs/en/compiler-architecture#transforms) TL;DR: reduce query size
+- [Optimize Queries](https://relay.dev/docs/principles-and-architecture/compiler-architecture/#transforms) TL;DR: reduce query size
   - Inline Fragments
   - Flatten Transform
   - Skip Redundant Node Transform
 - FragmentArguments
-  - [`@argumentsDefinition`](https://relay.dev/docs/en/graphql-in-relay#argumentdefinitions)
-  - [`@arguments`](https://relay.dev/docs/en/graphql-in-relay#arguments)
+  - [`@argumentsDefinition`](https://relay.dev/docs/api-reference/graphql-and-directives/#argumentdefinitions)
+  - [`@arguments`](https://relay.dev/docs/api-reference/graphql-and-directives/#arguments)
 
 ## Install Instructions [![npm](https://img.shields.io/npm/dm/@n1ru4l/graphql-codegen-relay-optimizer-plugin.svg)](https://www.npmjs.com/package/@n1ru4l/graphql-codegen-relay-optimizer-plugin)
 
