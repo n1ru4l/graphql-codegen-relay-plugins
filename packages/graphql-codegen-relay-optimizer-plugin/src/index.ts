@@ -17,6 +17,7 @@ export interface RelayOptimizerPluginConfig {}
 export const plugin: PluginFunction<RelayOptimizerPluginConfig> = (
   schema: GraphQLSchema,
   documents: Types.DocumentFile[],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _config: RelayOptimizerPluginConfig
 ) => {
   // @TODO way for users to define directives they use, otherwise relay will throw an unknown directive error
@@ -30,7 +31,7 @@ export const plugin: PluginFunction<RelayOptimizerPluginConfig> = (
   ]);
 
   const documentAsts = documents.reduce((prev, v) => {
-    return [...prev, ...v.document?.definitions ?? []];
+    return [...prev, ...(v.document?.definitions ?? [])];
   }, [] as DefinitionNode[]);
 
   const relayDocuments = RelayParser.transform(adjustedSchema, documentAsts);
@@ -57,23 +58,50 @@ export const plugin: PluginFunction<RelayOptimizerPluginConfig> = (
       skipRedundantNodesTransform,
     ]);
 
-  const newQueryDocuments:Types.DocumentFile[]  = queryCompilerContext.documents().map(doc => ({
-    location: "optimized by relay",
-    document: parse(relayPrint(adjustedSchema, doc))
-  }));
+  const newQueryDocuments: Types.DocumentFile[] = queryCompilerContext
+    .documents()
+    .map((doc) => ({
+      location: "optimized by relay",
+      document: parse(relayPrint(adjustedSchema, doc)),
+    }));
 
   const newDocuments: Types.DocumentFile[] = [
-    ...fragmentDocuments.map(doc => ({
+    ...fragmentDocuments.map((doc) => ({
       location: "optimized by relay",
-      document: parse(relayPrint(adjustedSchema, doc))
+      document: parse(relayPrint(adjustedSchema, doc)),
     })),
     ...newQueryDocuments,
   ];
 
-  documents.splice(0, documents.length);
-  documents.push(
-    ...newDocuments
-  );
+  const newDocumentsFragmentsLookup = new Set<string>();
+  for (const doc of newDocuments) {
+    if (!doc.document?.definitions) {
+      continue;
+    }
+    for (const definition of doc.document.definitions) {
+      if (definition.kind === "FragmentDefinition") {
+        newDocumentsFragmentsLookup.add(definition.name.value);
+      }
+    }
+  }
+  const oldDocuments = documents.splice(0, documents.length);
+  documents.push(...newDocuments);
+
+  for (const doc of oldDocuments) {
+    if (!doc.document?.definitions) {
+      continue;
+    }
+    for (const definition of doc.document.definitions) {
+      if (
+        definition.kind === "FragmentDefinition" &&
+        !newDocumentsFragmentsLookup.has(definition.name.value)
+      ) {
+        documents.push({
+          document: { kind: "Document", definitions: [definition] },
+        });
+      }
+    }
+  }
 
   return {
     content: "",

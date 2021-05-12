@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 import "@graphql-codegen/testing";
 
-import { buildSchema, parse, print, ASTNode } from "graphql";
+import {
+  buildSchema,
+  parse,
+  print,
+  ASTNode,
+  ExecutableDefinitionNode,
+} from "graphql";
 import { plugin } from "..";
 import { Types } from "@graphql-codegen/plugin-helpers";
 
@@ -50,10 +56,10 @@ it("can be called with queries that include connection fragments", async () => {
 it("can inline @argumentDefinitions/@arguments annotated fragments", async () => {
   const fragmentDocument = parse(/* GraphQL */ `
     fragment UserLogin on User
-      @argumentDefinitions(
-        height: { type: "Int", defaultValue: 10 }
-        width: { type: "Int", defaultValue: 10 }
-      ) {
+    @argumentDefinitions(
+      height: { type: "Int", defaultValue: 10 }
+      width: { type: "Int", defaultValue: 10 }
+    ) {
       id
       login
       avatar(width: $width, height: $height) {
@@ -155,4 +161,39 @@ it("handles unions with interfaces the correct way", async () => {
       }
     }
   `);
+});
+
+it("keeps original fragment with argument definitions", async () => {
+  const schema = buildSchema(/* GraphQL */ `
+    type Query {
+      foo(arg: String): String
+    }
+  `);
+
+  const queryDocument = parse(/* GraphQL */ `
+    query QueryDocument($arg: String) {
+      ...FragmentDocument @arguments(arg: $arg)
+    }
+  `);
+
+  const fragmentDocument = parse(/* GraphQL */ `
+    fragment FragmentDocument on Query
+    @argumentDefinitions(arg: { type: "String", defaultValue: null }) {
+      foo(arg: $arg)
+    }
+  `);
+
+  const input: Types.DocumentFile[] = [
+    { document: queryDocument },
+    { document: fragmentDocument },
+  ];
+  await plugin(schema, input, {});
+  const documents = new Set(
+    input.map(
+      (f) =>
+        (f.document!.definitions[0] as ExecutableDefinitionNode).name!.value
+    )
+  );
+  expect(documents.has("FragmentDocument")).toEqual(true);
+  expect(documents.has("QueryDocument")).toEqual(true);
 });
