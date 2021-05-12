@@ -191,6 +191,7 @@ it("keeps original fragment with argument definitions", async () => {
   const documents = new Set(
     input.map(
       (f) =>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         (f.document!.definitions[0] as ExecutableDefinitionNode).name!.value
     )
   );
