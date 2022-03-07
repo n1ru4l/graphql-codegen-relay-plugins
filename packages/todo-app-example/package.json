@@ -17,7 +17,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-scripts": "3.4.4",
-    "todomvc-app-css": "2.3.0",
+    "todomvc-app-css": "2.4.2",
     "todomvc-common": "1.0.5"
   },
   "scripts": {
