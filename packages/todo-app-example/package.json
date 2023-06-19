@@ -54,7 +54,7 @@
     "@n1ru4l/graphql-codegen-relay-optimizer-plugin": "*",
     "@types/classnames": "2.2.11",
     "@types/jest": "24.9.1",
-    "@types/node": "12.19.15",
+    "@types/node": "12.20.55",
     "@types/react": "17.0.5",
     "@types/react-dom": "16.9.12",
     "graphql.macro": "1.4.2",
