@@ -53,7 +53,7 @@
     "@graphql-codegen/typescript-react-apollo": "2.2.4",
     "@n1ru4l/graphql-codegen-relay-optimizer-plugin": "*",
     "@types/classnames": "2.2.11",
-    "@types/jest": "24.9.1",
+    "@types/jest": "29.5.14",
     "@types/node": "12.19.15",
     "@types/react": "17.0.5",
     "@types/react-dom": "16.9.12",
