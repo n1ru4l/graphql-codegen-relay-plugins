@@ -28,11 +28,11 @@
     "graphql": "14.x.x || 15.x.x"
   },
   "dependencies": {
-    "@graphql-codegen/plugin-helpers": "1.18.6",
+    "@graphql-codegen/plugin-helpers": "1.18.8",
     "relay-compiler": "10.1.3"
   },
   "devDependencies": {
-    "@graphql-codegen/testing": "1.17.7",
+    "@graphql-codegen/testing": "1.18.3",
     "@types/jest": "24.9.1",
     "@types/relay-compiler": "8.0.0",
     "graphql": "15.5.0",
